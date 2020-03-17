@@ -1,51 +1,35 @@
 package people;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import io.vertx.core.DeploymentOptions;
-import io.vertx.core.Vertx;
-import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.Async;
 import io.vertx.ext.unit.TestContext;
 import io.vertx.ext.unit.junit.VertxUnitRunner;
+import io.vertx.ext.web.client.WebClient;
 
 @RunWith(VertxUnitRunner.class)
-public class HelloWorldVerticleTest {
+public class HelloWorldVerticleTest extends AbstractVerticleTest {
 
-	private Vertx vertx;
-	private Integer port;
+	@Override
+	protected String getTestVerticleName() {
+		return HelloWorldVerticle.class.getName();
+	}
 
-	@Before
-	public void setUp(TestContext context) throws IOException {
-		
-		vertx = Vertx.vertx();
-		ServerSocket socket = new ServerSocket(8080);
-		port = socket.getLocalPort();
-		socket.close();
-		DeploymentOptions options = new DeploymentOptions().setConfig(new JsonObject().put("http.port", port));
-		vertx.deployVerticle(HelloWorldVerticle.class.getName(), options, context.asyncAssertSuccess());
-	}
-	
-	@After
-	public void tearDown(TestContext context) {
-	  vertx.close(context.asyncAssertSuccess());
-	}
-	
 	@Test
 	public void testMyApplication(TestContext context) {
-	  final Async async = context.async();
-	  vertx.createHttpClient().getNow(port, "localhost", "/", response -> {
-	    response.handler(body -> {
-	      context.assertTrue(body.toString().contains("Hello"));
-	      async.complete();
-	    });
-	  });
-	 }
+
+		WebClient client = WebClient.create(vertx);
+
+		Async async = context.async();
+
+		client.get(port, "localhost", "/").send(ar -> {
+			context.assertTrue(ar.succeeded());
+
+			context.assertTrue(ar.result().bodyAsString().contains("Hello"));
+
+			async.complete();
+		});
+	}
 
 }
