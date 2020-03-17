@@ -18,7 +18,7 @@ public class InMemoryPeopleStorage implements PeopleStorage {
 		Person person = storage.get(id);
 
 		if (person == null) {
-			throw new RuntimeException("User " + id + " not found");
+			throw new StorageException("User " + id + " not found");
 		}
 
 		return person;
@@ -36,7 +36,7 @@ public class InMemoryPeopleStorage implements PeopleStorage {
 		if (!storage.containsKey(person.getId())) {
 			storage.put(person.getId(), person);
 		} else {
-			throw new RuntimeException("User " + person.getId() + " already exists");
+			throw new StorageException("User " + person.getId() + " already exists");
 		}
 	}
 

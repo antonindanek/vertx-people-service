@@ -34,7 +34,7 @@ public class InMemoryPeopleStorageTest {
 		
 		try {
 			storage.save(p1);
-		} catch (RuntimeException e) {
+		} catch (StorageException e) {
 			Assert.assertEquals("User 1 already exists", e.getMessage());
 			return;
 		}
@@ -47,7 +47,7 @@ public class InMemoryPeopleStorageTest {
 		
 		try {
 			storage.getPerson(p1.getId());
-		} catch (RuntimeException e) {
+		} catch (StorageException e) {
 			Assert.assertEquals("User 1 not found", e.getMessage());
 			return;
 		}
