@@ -9,11 +9,12 @@ import io.vertx.core.DeploymentOptions;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.unit.TestContext;
+import people.config.ConfigReader;
 
 public abstract class AbstractVerticleTest {
 
 	protected Vertx vertx;
-	protected Integer port = 8080;
+	protected Integer port = ConfigReader.getPort();
 
 	protected abstract String getTestVerticleName();
 	

@@ -2,6 +2,7 @@ package people;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
+import people.config.ConfigReader;
 
 public class HelloWorldVerticle extends AbstractVerticle {
 
@@ -10,7 +11,7 @@ public class HelloWorldVerticle extends AbstractVerticle {
 
 		vertx.createHttpServer().requestHandler(r -> {
 			r.response().end("Hello world");
-		}).listen(8080, result -> {
+		}).listen(ConfigReader.getPort(), result -> {
 
 			if (result.succeeded()) {
 				startPromise.complete();

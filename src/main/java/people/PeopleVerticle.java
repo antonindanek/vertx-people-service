@@ -9,6 +9,7 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.api.RequestParameters;
 import io.vertx.ext.web.api.validation.HTTPRequestValidationHandler;
 import io.vertx.ext.web.api.validation.ParameterType;
+import people.config.ConfigReader;
 import people.storage.InMemoryPeopleStorage;
 import people.storage.PeopleStorage;
 import people.storage.StorageException;
@@ -36,7 +37,7 @@ public class PeopleVerticle extends AbstractVerticle {
 
 		HttpServer server = vertx.createHttpServer();
 
-		server.requestHandler(router).listen(8080, result -> {
+		server.requestHandler(router).listen(ConfigReader.getPort(), result -> {
 
 			if (result.succeeded()) {
 				startPromise.complete();
