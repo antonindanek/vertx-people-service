@@ -23,7 +23,7 @@ public class PeopleVerticle extends AbstractVerticle {
 
 	private static final String PATH_PARAM_PERSON_ID = "personId";
 
-	private static final PeopleStorage storage = new InMemoryPeopleStorage();
+	private final PeopleStorage storage = new InMemoryPeopleStorage();
 
 	private Logger logger = LoggerFactory.getLogger(PeopleVerticle.class);
 	
