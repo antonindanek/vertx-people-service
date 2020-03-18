@@ -5,6 +5,10 @@ public class Person {
 	private int id;
 	private String name;
 	
+	// empty constructor needed for automatic mapping from JSON
+	public Person() {
+	}
+	
 	public Person(int id, String name) {
 		this.id = id;
 		this.name = name;
@@ -30,6 +34,11 @@ public class Person {
 		}
 		
 		return super.equals(obj);
+	}
+	
+	@Override
+	public String toString() {
+		return "Person[" + id + ", " + name + "]";
 	}
 	
 }
