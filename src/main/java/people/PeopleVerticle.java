@@ -30,20 +30,7 @@ public class PeopleVerticle extends AbstractVerticle {
 	@Override
 	public void start(Promise<Void> startPromise) {
 
-		Router router = Router.router(vertx);
-		router.get("/persons").handler(this::getPersons);
-		router.post("/persons").handler(BodyHandler.create()).handler(this::savePerson);
-		router.get("/person/:" + PATH_PARAM_PERSON_ID)
-				.handler(HTTPRequestValidationHandler.create().addPathParam(PATH_PARAM_PERSON_ID, ParameterType.INT))
-				.handler(this::getPerson);
-
-		router.errorHandler(500, routingContext -> {
-			
-			logger.error(routingContext.failure().getMessage());
-			
-			routingContext.response().setStatusCode(routingContext.failure() instanceof StorageException ? 400 : 500)
-					.end(routingContext.failure().toString());
-		});
+		Router router = initRouter();
 
 		logger.info("Creating HTTP server");
 		
@@ -60,10 +47,30 @@ public class PeopleVerticle extends AbstractVerticle {
 
 	}
 
+	private Router initRouter() {
+		
+		Router router = Router.router(vertx);
+		router.get("/persons").handler(this::getPersons);
+		router.post("/persons").handler(BodyHandler.create()).handler(this::savePerson);
+		router.get("/person/:" + PATH_PARAM_PERSON_ID)
+				.handler(HTTPRequestValidationHandler.create().addPathParam(PATH_PARAM_PERSON_ID, ParameterType.INT))
+				.handler(this::getPerson);
+
+		router.errorHandler(500, routingContext -> {
+			
+			logger.error(routingContext.failure().getMessage());
+			
+			routingContext.response().setStatusCode(routingContext.failure() instanceof StorageException ? 400 : 500)
+					.end(routingContext.failure().toString());
+		});
+		
+		return router;
+	}
+
 	private void getPerson(RoutingContext routingContext) {
 		
-
 		RequestParameters params = routingContext.get("parsedParameters");
+		
 		Integer personId = params.pathParameter(PATH_PARAM_PERSON_ID).getInteger();
 		
 		logger.info("Processing request to get person: " + personId);
@@ -80,7 +87,6 @@ public class PeopleVerticle extends AbstractVerticle {
 		storage.save(newPerson);
 		
 		routingContext.response().putHeader("content-type", "application/json; charset=utf-8").end(Json.encodePrettily(newPerson));
-		
 	}
 
 	private void getPersons(RoutingContext routingContext) {
