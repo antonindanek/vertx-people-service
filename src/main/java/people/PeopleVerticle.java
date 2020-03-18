@@ -21,7 +21,8 @@ import people.storage.StorageException;
 
 public class PeopleVerticle extends AbstractVerticle {
 
-	private static final String PATH_PARAM_PERSON_ID = "personId";
+	public static final String PATH_PARAM_PERSON_ID = "personId";
+	public static final String LOCATION_PERSONS = "persons";
 
 	private final PeopleStorage storage = new InMemoryPeopleStorage();
 
@@ -50,9 +51,9 @@ public class PeopleVerticle extends AbstractVerticle {
 	private Router initRouter() {
 		
 		Router router = Router.router(vertx);
-		router.get("/persons").handler(this::getPersons);
-		router.post("/persons").handler(BodyHandler.create()).handler(this::savePerson);
-		router.get("/person/:" + PATH_PARAM_PERSON_ID)
+		router.get("/" + LOCATION_PERSONS).handler(this::getPersons);
+		router.post("/" + LOCATION_PERSONS).handler(BodyHandler.create()).handler(this::savePerson);
+		router.get("/" + LOCATION_PERSONS + "/:" + PATH_PARAM_PERSON_ID)
 				.handler(HTTPRequestValidationHandler.create().addPathParam(PATH_PARAM_PERSON_ID, ParameterType.INT))
 				.handler(this::getPerson);
 

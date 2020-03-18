@@ -31,7 +31,7 @@ public class PeopleVerticleTest extends AbstractVerticleTest {
 
 		Async async = context.async();
 
-		client.get(port, "localhost", "/persons").send(ar -> {
+		client.get(port, "localhost", "/" + PeopleVerticle.LOCATION_PERSONS).send(ar -> {
 			context.assertTrue(ar.succeeded());
 			context.assertEquals("application/json; charset=utf-8", ar.result().getHeader("content-type"));
 
@@ -49,7 +49,7 @@ public class PeopleVerticleTest extends AbstractVerticleTest {
 
 		Async async = context.async();
 
-		client.post(port, "localhost", "/persons").sendJson(p1, ar -> {
+		client.post(port, "localhost", "/" + PeopleVerticle.LOCATION_PERSONS).sendJson(p1, ar -> {
 			context.assertTrue(ar.succeeded());
 			context.assertEquals("application/json; charset=utf-8", ar.result().getHeader("content-type"));
 
@@ -71,14 +71,14 @@ public class PeopleVerticleTest extends AbstractVerticleTest {
 
 		Async async = context.async();
 
-		client.post(port, "localhost", "/persons").sendJson(p1, context.asyncAssertSuccess(createResponse1 -> {
+		client.post(port, "localhost", "/" + PeopleVerticle.LOCATION_PERSONS).sendJson(p1, context.asyncAssertSuccess(createResponse1 -> {
 
 			context.assertTrue(createResponse1.statusCode() == 200);
 
 			Person createdPerson = createResponse1.bodyAsJson(Person.class);
 			context.assertNotNull(createdPerson);
 
-			client.post(port, "localhost", "/persons").sendJson(p1, context.asyncAssertSuccess(createResponse2 -> {
+			client.post(port, "localhost", "/" + PeopleVerticle.LOCATION_PERSONS).sendJson(p1, context.asyncAssertSuccess(createResponse2 -> {
 				context.assertTrue(createResponse2.statusCode() == 400);
 
 			}));
@@ -95,11 +95,11 @@ public class PeopleVerticleTest extends AbstractVerticleTest {
 
 		Async async = context.async();
 
-		client.post(port, "localhost", "/persons").sendJson(p1, context.asyncAssertSuccess(createResponse -> {
+		client.post(port, "localhost", "/" + PeopleVerticle.LOCATION_PERSONS).sendJson(p1, context.asyncAssertSuccess(createResponse -> {
 
 			Person createdPerson = createResponse.bodyAsJson(Person.class);
 
-			client.get(port, "localhost", "/person/" + createdPerson.getId()).send(getResponse -> {
+				client.get(port, "localhost", "/" + PeopleVerticle.LOCATION_PERSONS + "/" + createdPerson.getId()).send(getResponse -> {
 
 				Person fetchedPerson = getResponse.result().bodyAsJson(Person.class);
 
@@ -120,9 +120,9 @@ public class PeopleVerticleTest extends AbstractVerticleTest {
 
 		Async async = context.async();
 
-		client.post(port, "localhost", "/persons").sendJson(p1, context.asyncAssertSuccess(createResponse1 -> {
-			client.post(port, "localhost", "/persons").sendJson(p2, context.asyncAssertSuccess(createResponse2 -> {
-				client.get(port, "localhost", "/persons").send(getResponse -> {
+		client.post(port, "localhost", "/" + PeopleVerticle.LOCATION_PERSONS).sendJson(p1, context.asyncAssertSuccess(createResponse1 -> {
+			client.post(port, "localhost", "/" + PeopleVerticle.LOCATION_PERSONS).sendJson(p2, context.asyncAssertSuccess(createResponse2 -> {
+				client.get(port, "localhost", "/" + PeopleVerticle.LOCATION_PERSONS).send(getResponse -> {
 
 					List<Person> allPersons = getResponse.result().bodyAsJsonArray().stream()
 							.map(jsonObject -> ((JsonObject) jsonObject).mapTo(Person.class))
