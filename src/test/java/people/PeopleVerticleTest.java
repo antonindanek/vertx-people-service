@@ -63,6 +63,30 @@ public class PeopleVerticleTest extends AbstractVerticleTest {
 		});
 
 	}
+	
+	@Test
+	public void testCreateDuplicate(TestContext context) {
+
+		WebClient client = WebClient.create(vertx);
+
+		Async async = context.async();
+
+		client.post(port, "localhost", "/persons").sendJson(p1, context.asyncAssertSuccess(createResponse1 -> {
+
+			context.assertTrue(createResponse1.statusCode() == 200);
+
+			Person createdPerson = createResponse1.bodyAsJson(Person.class);
+			context.assertNotNull(createdPerson);
+
+			client.post(port, "localhost", "/persons").sendJson(p1, context.asyncAssertSuccess(createResponse2 -> {
+				context.assertTrue(createResponse2.statusCode() == 400);
+
+			}));
+
+			async.complete();
+		}));
+
+	}
 
 	@Test
 	public void testGet(TestContext context) {
